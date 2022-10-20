@@ -1,0 +1,9 @@
+[submodule "lib/blazesym"]
+	path = lib/blazesym
+	url = https://github.com/libbpf/blazesym.git
+[submodule "lib/bpftool"]
+	path = lib/bpftool
+	url = https://github.com/libbpf/bpftool
+[submodule "lib/libbpf"]
+	path = lib/libbpf
+	url = https://github.com/libbpf/libbpf.git
