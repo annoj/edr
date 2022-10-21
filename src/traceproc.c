@@ -32,8 +32,9 @@ void handle_event(void *ctx, int cpu, void *data, unsigned int data_sz)
     tm = localtime(&t);
     strftime(ts, sizeof(ts), "%H:%M:%S", tm);
 
-    printf("%-8s %-5s %-7d %-16s %s\n", 
-           ts, "EXEC", e->pid, e->comm, e->filename);
+    printf("%-8s %-5s %-7d %-7d %-9d %-10d %-16s %s\n", 
+           ts, "EXEC", e->pid, e->ppid, e->loginuid, e->sessionid, e->comm,
+           e->filename);
 }
 
 int main(int argc, char **argv)
@@ -75,8 +76,9 @@ int main(int argc, char **argv)
         goto cleanup;
     }
 
-    printf("%-8s %-5s %-7s %-16s %s\n",
-           "TIME", "EVENT", "PID", "COMM", "FILENAME");
+    printf("%-8s %-5s %-7s %-7s %-9s %-10s %-16s %s\n",
+           "TIME", "EVENT", "PID", "PPID", "LOGINUID", "SESSIONID", "COMM",
+           "FILENAME");
     while (!exiting) {
         err = perf_buffer__poll(pb, 100 /* timeout in ms */);
         if (err == -EINTR) {

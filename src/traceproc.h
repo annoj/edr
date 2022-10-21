@@ -6,8 +6,11 @@
 
 struct event {
 	int pid;
+	int ppid;
 	char comm[TASK_COMM_LEN];
 	char filename[MAX_FILENAME_LEN];
+	unsigned int loginuid;
+	unsigned int sessionid;
 };
 
 #endif
