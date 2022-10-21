@@ -10,6 +10,8 @@ struct event {
 	char comm[TASK_COMM_LEN];
 	char filename[MAX_FILENAME_LEN];
 	unsigned int loginuid;
+	unsigned int uid;
+	unsigned int gid;
 	unsigned int sessionid;
 };
 

@@ -24,6 +24,8 @@ int handle_exec(struct trace_event_raw_sched_process_exec /* vmlinux.h */ *ctx)
 {
 	struct task_struct *task;
 	unsigned fname_off = ctx->__data_loc_filename & 0xffff;
+	// TODO: Is there a better type for this?
+	unsigned long long uid_gid = bpf_get_current_uid_gid();
 	struct event *e;
 	int zero = 0;
 
@@ -39,6 +41,8 @@ int handle_exec(struct trace_event_raw_sched_process_exec /* vmlinux.h */ *ctx)
 	e->ppid = BPF_CORE_READ(task, real_parent, tgid);
 	// TODO: Shouldn't it be possible to cast kuid_t to unsigned int?
 	BPF_CORE_READ_INTO(&e->loginuid, task, loginuid);
+	e->uid = uid_gid >> 32;
+	e->gid = uid_gid & 0xffffffff;
 	e->sessionid = BPF_CORE_READ(task, sessionid);
 	bpf_get_current_comm(&e->comm, sizeof(e->comm));
 	bpf_probe_read_str(&e->filename, sizeof(e->filename),
