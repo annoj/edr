@@ -1,6 +1,10 @@
 #ifndef __TRACEPROC_H
 #define __TRACEPROC_H
 
+#define REDIS_HOST "127.0.0.1"
+#define REDIS_PORT 6379
+#define REDIS_DATABASE "EDR"
+
 #define TASK_COMM_LEN 16
 #define MAX_FILENAME_LEN 512
 

@@ -18,7 +18,7 @@ VMLINUX := ../vmlinux/vmlinux.h
 # Use our own libbpf API headers and Linux UAPI headers distributed with
 # libbpf to avoid dependency on system-wide headers, which could be missing or
 # outdated
-INCLUDES := -I$(OUTPUT) -I../lib/libbpf/include/uapi -I$(dir $(VMLINUX))
+INCLUDES := -I$(OUTPUT) -I../lib/libbpf/include/uapi -I$(dir $(VMLINUX)) -I$(abspath $(OUTPUT)/hiredis/include)
 CFLAGS := -g -Wall
 ALL_LDFLAGS := $(LDFLAGS) $(EXTRA_LDFLAGS)
 
@@ -140,7 +140,7 @@ $(BZS_APPS): $(LIBBLAZESYM_OBJ)
 # Build application binary
 $(APPS): %: $(OUTPUT)/%.o $(LIBBPF_OBJ) | $(OUTPUT)
 	$(call msg,BINARY,$@)
-	$(Q)$(CC) $(CFLAGS) $^ $(ALL_LDFLAGS) -lelf -lz -o $(BIN_OUTPUT)/$@
+	$(Q)$(CC) $(CFLAGS) $^ $(ALL_LDFLAGS) $(REDIS_TOOLS_FLAGS) -lelf -lz -o $(BIN_OUTPUT)/$@
 
 # delete failed targets
 .DELETE_ON_ERROR:
