@@ -7,3 +7,6 @@
 [submodule "lib/libbpf"]
 	path = lib/libbpf
 	url = https://github.com/libbpf/libbpf.git
+[submodule "lib/hiredis"]
+	path = lib/hiredis
+	url = https://github.com/redis/hiredis

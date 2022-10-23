@@ -11,6 +11,8 @@ BPFTOOL ?= $(BPFTOOL_OUTPUT)/bootstrap/bpftool
 LIBBLAZESYM_SRC := $(abspath ../lib/blazesym/)
 LIBBLAZESYM_OBJ := $(abspath $(OUTPUT)/libblazesym.a)
 LIBBLAZESYM_HEADER := $(abspath $(OUTPUT)/blazesym.h)
+HIREDIS_SRC := $(abspath ../lib/hiredis)
+HIREDIS_OUTPUT := $(abspath $(OUTPUT)/hiredis)
 ARCH := $(shell uname -m | sed 's/x86_64/x86/' | sed 's/aarch64/arm64/' | sed 's/ppc64le/powerpc/' | sed 's/mips.*/mips/')
 VMLINUX := ../vmlinux/vmlinux.h
 # Use our own libbpf API headers and Linux UAPI headers distributed with
@@ -20,7 +22,10 @@ INCLUDES := -I$(OUTPUT) -I../lib/libbpf/include/uapi -I$(dir $(VMLINUX))
 CFLAGS := -g -Wall
 ALL_LDFLAGS := $(LDFLAGS) $(EXTRA_LDFLAGS)
 
+REDIS_TOOLS_FLAGS := -static -I$(abspath $(OUTPUT)/hiredis/include) -L$(abspath $(OUTPUT)/hiredis/lib) -lhiredis
+
 APPS = traceproc
+REDIS_TOOLS = redis-graph-cli
 
 CARGO ?= $(shell which cargo)
 ifeq ($(strip $(CARGO)),)
@@ -65,7 +70,7 @@ $(call allow-override,CC,$(CROSS_COMPILE)cc)
 $(call allow-override,LD,$(CROSS_COMPILE)ld)
 
 .PHONY: all
-all: $(APPS)
+all: $(APPS) $(REDIS_TOOLS)
 
 .PHONY: clean
 clean:
@@ -83,6 +88,15 @@ $(LIBBPF_OBJ): $(wildcard $(LIBBPF_SRC)/*.[ch] $(LIBBPF_SRC)/Makefile) | $(OUTPU
 		    OBJDIR=$(dir $@)/libbpf DESTDIR=$(dir $@)		      \
 		    INCLUDEDIR= LIBDIR= UAPIDIR=			      \
 		    install
+
+# Build hiredis
+hiredis:
+	$(call msg,HIREDIS,$@)
+	$(Q)$(MAKE) -C $(HIREDIS_SRC) PREFIX=$(HIREDIS_OUTPUT) install > /dev/null
+
+$(REDIS_TOOLS): %: hiredis
+	$(call msg,REDISTOOLS,$@)
+	$(Q)$(CC) $(CFLAGS) $@.c $(REDIS_TOOLS_FLAGS) -o $(BIN_OUTPUT)/$@ > /dev/null
 
 # Build bpftool
 $(BPFTOOL): | $(BPFTOOL_OUTPUT)

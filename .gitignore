@@ -1,3 +1,4 @@
 src/.output
 bin/
 *.bak
+.vscode/
