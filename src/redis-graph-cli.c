@@ -16,6 +16,9 @@ void _print_redis_reply(redisReply *r, int indent) {
             _print_redis_reply(r->element[i], indent + 4);
         }
         break;
+	case REDIS_REPLY_ERROR:
+		printf("REDIS_REPLY_ERROR: %s\n", r->str);
+		break;
     default:
         fprintf(stderr, "Redis reply type %d is not implemented.\n", r->type);
     }
