@@ -23,7 +23,6 @@ SEC("tp/sched/sched_process_exec")
 int handle_exec(struct trace_event_raw_sched_process_exec /* vmlinux.h */ *ctx)
 {
 	struct task_struct *task;
-	unsigned fname_off = ctx->__data_loc_filename & 0xffff;
 	// TODO: Is there a better type for this?
 	unsigned long long uid_gid = bpf_get_current_uid_gid();
 	struct event *e;
@@ -45,8 +44,11 @@ int handle_exec(struct trace_event_raw_sched_process_exec /* vmlinux.h */ *ctx)
 	e->gid = uid_gid & 0xffffffff;
 	e->sessionid = BPF_CORE_READ(task, sessionid);
 	bpf_get_current_comm(&e->comm, sizeof(e->comm));
+
+	// ctx->__data_loc_filename needs to be clamped to max range of 0x1ff
+	// according to https://lists.iovisor.org/g/iovisor-dev/topic/30285987
 	bpf_probe_read_str(&e->filename, sizeof(e->filename),
-					   (void *)ctx + fname_off);
+					   (void *)ctx + (ctx->__data_loc_filename & 0x1ff));
 
 	bpf_perf_event_output(ctx, &pb, BPF_F_CURRENT_CPU, e, sizeof(*e));
 
