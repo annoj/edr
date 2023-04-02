@@ -50,6 +50,23 @@ int handle_exec(struct trace_event_raw_sched_process_exec /* vmlinux.h */ *ctx)
 	bpf_probe_read_str(&e->filename, sizeof(e->filename),
 					   (void *)ctx + (ctx->__data_loc_filename & 0x1ff));
 
+	// Read commandline
+	uint64_t arg_start = BPF_CORE_READ(task, mm, arg_start);
+	uint64_t arg_end = BPF_CORE_READ(task, mm, arg_end);
+	size_t arg_len = arg_end - arg_start;
+	if (arg_len > MAX_COMMANDLINE_LEN - 1) {
+		arg_len = MAX_COMMANDLINE_LEN - 1;
+	}
+
+	int err = bpf_probe_read(&e->commandline, arg_len, (void *)arg_start);
+	if (err < 0) {
+		bpf_printk("Error in bpf_probe_read: %d\n", err);
+		arg_len = 0;
+	}
+
+	e->commandline[arg_len] = '\0';
+	e->commandline_len = arg_len;
+
 	bpf_perf_event_output(ctx, &pb, BPF_F_CURRENT_CPU, e, sizeof(*e));
 
     return 0;

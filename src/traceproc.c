@@ -58,10 +58,11 @@ int store_process_event(const struct event *e, time_t t, redisContext *ctx)
                 "gid: %d, "
                 "sessionid: %d, "
                 "comm: '%s', "
+                "commandline: '%s', "
                 "filename: '%s'"
             "})",
             e->ppid, e->pid, (long int)t, e->loginuid, e->uid, e->gid,
-            e->sessionid, e->comm, e->filename);
+            e->sessionid, e->comm, e->commandline, e->filename);
 
     reply = redisCommand(ctx, "GRAPH.QUERY %s %s", REDIS_DATABASE, query);
 
@@ -77,9 +78,18 @@ int store_process_event(const struct event *e, time_t t, redisContext *ctx)
     return 0;
 }
 
+void string_replace(char *string, size_t len, char substituent, char substitute)
+{
+	for (size_t i = 0; i < len - 1; i++) {
+		if (string[i] == substituent) {
+			string[i] = substitute;
+		}
+	}
+}
+
 void handle_event(void *ctx, int cpu, void *data, unsigned int data_sz)
 {
-    const struct event *e = data;
+    struct event *e;
     struct tm *tm;
     char ts[32];
     time_t t;
@@ -88,9 +98,17 @@ void handle_event(void *ctx, int cpu, void *data, unsigned int data_sz)
     tm = localtime(&t);
     strftime(ts, sizeof(ts), "%H:%M:%S", tm);
 
-    printf("%-8s %-5s %-7d %-7d %-9d %-7d %-7d %-10d %-16s %s\n", 
+    // Copy read only event data to writable memory and replace '\0' bytes in 
+    // e->commandline with ' '.
+    // TODO: This seems to be quite inefficient is there a better way?
+    // TODO: malloc and memcpy can fail, implement error handling.
+    e = malloc(sizeof(*e));
+    memcpy(e, data, sizeof(*e));
+    string_replace(e->commandline, e->commandline_len, '\0', ' ');
+
+    printf("%-8s %-5s %-7d %-7d %-9d %-7d %-7d %-10d %-16s %-64s %s\n", 
            ts, "EXEC", e->pid, e->ppid, e->loginuid, e->uid, e->gid,
-           e->sessionid, e->comm, e->filename);
+           e->sessionid, e->comm, e->commandline, e->filename);
 
     store_process_event(e, t, redis_ctx);
 }
@@ -147,9 +165,9 @@ int poll_bpf_traceproc(struct perf_buffer *pb)
 {
     int err = 0;
 
-    printf("%-8s %-5s %-7s %-7s %-9s %-7s %-7s %-10s %-16s %s\n",
+    printf("%-8s %-5s %-7s %-7s %-9s %-7s %-7s %-10s %-16s %-64s %s\n",
            "TIME", "EVENT", "PID", "PPID", "LOGINUID", "UID", "GID",
-           "SESSIONID", "COMM", "FILENAME");
+           "SESSIONID", "COMM", "COMMANDLINE", "FILENAME");
 
     while (!exiting) {
         err = perf_buffer__poll(pb, 100 /* timeout in ms */);
