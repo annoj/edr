@@ -24,7 +24,7 @@ ALL_LDFLAGS := $(LDFLAGS) $(EXTRA_LDFLAGS)
 
 REDIS_TOOLS_FLAGS := -static -I$(abspath $(OUTPUT)/hiredis/include) -L$(abspath $(OUTPUT)/hiredis/lib) -lhiredis
 
-APPS = traceproc
+APPS = traceproc tracenet
 REDIS_TOOLS = redis-graph-cli
 
 CARGO ?= $(shell which cargo)
