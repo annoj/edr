@@ -18,25 +18,6 @@ static int libbpf_print_fn(enum libbpf_print_level level, const char *format,
     return vfprintf(stderr, format, args);
 }
 
-redisContext *init_redis()
-{
-    redisContext *c = redisConnect(REDIS_HOST, REDIS_PORT);
-
-    if (c->err) {
-        fprintf(stderr, "Could not connect to redis, error: %s\n", c->errstr);
-        return NULL;
-    }
-
-    return c;
-}
-
-void cleanup_redis(redisContext *c)
-{
-    if (!c) {
-        redisFree(c);
-    }
-}
-
 int store_event(const struct event *e, time_t t, redisContext *ctx)
 {
     size_t query_sz = 0xffff;
@@ -156,7 +137,7 @@ out:
     return err;
 }
 
-int poll_bpf_proc(struct perf_buffer *pb)
+int poll_bpf_proc(struct perf_buffer *pb, volatile bool *exiting)
 {
     int err = 0;
 
@@ -164,7 +145,7 @@ int poll_bpf_proc(struct perf_buffer *pb)
            "TIME", "EVENT", "PID", "PPID", "LOGINUID", "UID", "GID",
            "SESSIONID", "COMM", "COMMANDLINE", "FILENAME");
 
-    for (;;) {
+    while (!*exiting) {
         err = perf_buffer__poll(pb, 100 /* timeout in ms */);
         if (err == -EINTR) {
             err = 0;
@@ -180,7 +161,7 @@ int poll_bpf_proc(struct perf_buffer *pb)
     return err;
 }
 
-int trace_proc(void)
+void *trace_proc(void *status)
 {
     struct perf_buffer *pb = NULL;
     struct proc_bpf *skel = NULL;
@@ -191,17 +172,21 @@ int trace_proc(void)
         goto cleanup;
     }
 
-    redis_ctx = init_redis();
-    if (!redis_ctx) {
+    redis_ctx = redisConnect(REDIS_HOST, REDIS_PORT);
+    if (redis_ctx->err) {
         fprintf(stderr, "Failed to initialize redis context.\n");
+        err = redis_ctx->err;
         goto cleanup;
     }
 
-    err = poll_bpf_proc(pb);
+    err = poll_bpf_proc(pb, &((struct status *)status)->exiting);
 
 cleanup:
-    cleanup_redis(redis_ctx);
+    redisFree(redis_ctx);
     cleanup_bpf_proc(skel, pb);
 
-    return err < 0 ? -err : 0;
+    ((struct status *)status)->proc_result = err;
+    ((struct status *)status)->exiting = true;
+
+    return NULL;
 }

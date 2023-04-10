@@ -18,6 +18,6 @@ struct event {
 	unsigned int commandline_len;
 };
 
-int trace_proc(void);
+void *trace_proc(void *exiting);
 
 #endif

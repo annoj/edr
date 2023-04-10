@@ -140,7 +140,7 @@ $(BZS_APPS): $(LIBBLAZESYM_OBJ)
 # Build application binary
 edr: $(OUTPUT)/edr.o $(OUTPUT)/proc.o $(LIBBPF_OBJ) | $(OUTPUT) hiredis
 	$(call msg,BINARY,$@)
-	$(Q)$(CC) $(CFLAGS) $^ $(ALL_LDFLAGS) $(REDIS_TOOLS_FLAGS) -lelf -lz -o $(BIN_OUTPUT)/$@
+	$(Q)$(CC) $(CFLAGS) $^ -pthread $(ALL_LDFLAGS) $(REDIS_TOOLS_FLAGS) -lelf -lz -o $(BIN_OUTPUT)/$@
 
 # delete failed targets
 .DELETE_ON_ERROR:
