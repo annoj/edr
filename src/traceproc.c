@@ -185,7 +185,7 @@ int poll_bpf_traceproc(struct perf_buffer *pb)
     return err;
 }
 
-int main(int argc, char **argv)
+void traceproc_run()
 {
     struct perf_buffer *pb = NULL;
     struct traceproc_bpf *skel = NULL;
@@ -212,4 +212,9 @@ cleanup:
     cleanup_bpf_traceproc(skel, pb);
 
     return err < 0 ? -err : 0;
+}
+
+int main(int argc, char **argv)
+{
+    traceproc_run();
 }
