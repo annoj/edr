@@ -24,7 +24,7 @@ ALL_LDFLAGS := $(LDFLAGS) $(EXTRA_LDFLAGS)
 
 REDIS_TOOLS_FLAGS := -static -I$(abspath $(OUTPUT)/hiredis/include) -L$(abspath $(OUTPUT)/hiredis/lib) -lhiredis
 
-APPS = traceproc tracenet edr
+MODULES = proc
 REDIS_TOOLS = redis-graph-cli
 
 CARGO ?= $(shell which cargo)
@@ -70,12 +70,12 @@ $(call allow-override,CC,$(CROSS_COMPILE)cc)
 $(call allow-override,LD,$(CROSS_COMPILE)ld)
 
 .PHONY: all
-all: $(APPS) $(REDIS_TOOLS)
+all: edr
 
 .PHONY: clean
 clean:
 	$(call msg,CLEAN)
-	$(Q)rm -rf $(OUTPUT) $(APPS)
+	$(Q)rm -rf $(OUTPUT) $(MODLUES)
 
 $(OUTPUT) $(OUTPUT)/libbpf $(BPFTOOL_OUTPUT):
 	$(call msg,MKDIR,$@)
@@ -94,7 +94,7 @@ hiredis:
 	$(call msg,HIREDIS,$@)
 	$(Q)$(MAKE) -C $(HIREDIS_SRC) PREFIX=$(HIREDIS_OUTPUT) install > /dev/null
 
-$(REDIS_TOOLS): %: hiredis
+$(REDIS_TOOLS): hiredis
 	$(call msg,REDISTOOLS,$@)
 	$(Q)$(CC) $(CFLAGS) $@.c $(REDIS_TOOLS_FLAGS) -o $(BIN_OUTPUT)/$@ > /dev/null
 
@@ -127,7 +127,7 @@ $(OUTPUT)/%.skel.h: $(OUTPUT)/%.bpf.o | $(OUTPUT) $(BPFTOOL)
 	$(Q)$(BPFTOOL) gen skeleton $< > $@
 
 # Build user-space code
-$(patsubst %,$(OUTPUT)/%.o,$(APPS)): %.o: %.skel.h
+$(patsubst %,$(OUTPUT)/%.o,$(MODULES)): %.o: %.skel.h
 
 $(OUTPUT)/%.o: %.c $(wildcard %.h) | $(OUTPUT)
 	$(call msg,CC,$@)
@@ -138,7 +138,7 @@ $(patsubst %,$(OUTPUT)/%.o,$(BZS_APPS)): $(LIBBLAZESYM_HEADER)
 $(BZS_APPS): $(LIBBLAZESYM_OBJ)
 
 # Build application binary
-$(APPS): %: $(OUTPUT)/%.o $(LIBBPF_OBJ) | $(OUTPUT)
+edr: $(OUTPUT)/edr.o $(OUTPUT)/proc.o $(LIBBPF_OBJ) | $(OUTPUT) hiredis
 	$(call msg,BINARY,$@)
 	$(Q)$(CC) $(CFLAGS) $^ $(ALL_LDFLAGS) $(REDIS_TOOLS_FLAGS) -lelf -lz -o $(BIN_OUTPUT)/$@
 

@@ -1,8 +1,9 @@
+#include "proc.h"
 #include "vmlinux.h"
+
+#include <bpf/bpf_core_read.h>
 #include <bpf/bpf_helpers.h>
 #include <bpf/bpf_tracing.h>
-#include <bpf/bpf_core_read.h>
-#include "traceproc.h"
 
 char LICENSE[] SEC("license") = "Dual BSD/GPL";
 
@@ -20,11 +21,9 @@ struct {
 } heap SEC(".maps");
 
 SEC("tp/sched/sched_process_exec")
-int handle_exec(struct trace_event_raw_sched_process_exec /* vmlinux.h */ *ctx)
+int handle_exec(struct trace_event_raw_sched_process_exec *ctx)
 {
 	struct task_struct *task;
-	// TODO: Is there a better type for this?
-	unsigned long long uid_gid = bpf_get_current_uid_gid();
 	struct event *e;
 	int zero = 0;
 
@@ -36,14 +35,15 @@ int handle_exec(struct trace_event_raw_sched_process_exec /* vmlinux.h */ *ctx)
 
 	task = (struct task_struct *)bpf_get_current_task();
 
-	e->pid = bpf_get_current_pid_tgid() >> 32; // Shift to only use pid
-	e->ppid = BPF_CORE_READ(task, real_parent, tgid);
-	// TODO: Shouldn't it be possible to cast kuid_t to unsigned int?
-	BPF_CORE_READ_INTO(&e->loginuid, task, loginuid);
+	uint64_t uid_gid = bpf_get_current_uid_gid();
 	e->uid = uid_gid >> 32;
 	e->gid = uid_gid & 0xffffffff;
+	e->pid = BPF_CORE_READ(task, pid);
+	e->pid = BPF_CORE_READ(task, tgid);
+	e->ppid = BPF_CORE_READ(task, real_parent, tgid);
 	e->sessionid = BPF_CORE_READ(task, sessionid);
-	bpf_get_current_comm(&e->comm, sizeof(e->comm));
+    BPF_CORE_READ_INTO(&e->loginuid, task, loginuid);
+    BPF_CORE_READ_INTO(&e->comm, task, comm);
 
 	// ctx->__data_loc_filename needs to be clamped to max range of 0x1ff
 	// according to https://lists.iovisor.org/g/iovisor-dev/topic/30285987
@@ -55,6 +55,7 @@ int handle_exec(struct trace_event_raw_sched_process_exec /* vmlinux.h */ *ctx)
 	uint64_t arg_end = BPF_CORE_READ(task, mm, arg_end);
 	size_t arg_len = arg_end - arg_start;
 	if (arg_len > MAX_COMMANDLINE_LEN - 1) {
+        // TODO: Signal to userspace program that commandline has been truncated
 		arg_len = MAX_COMMANDLINE_LEN - 1;
 	}
 
