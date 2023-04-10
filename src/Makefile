@@ -24,7 +24,7 @@ ALL_LDFLAGS := $(LDFLAGS) $(EXTRA_LDFLAGS)
 
 REDIS_TOOLS_FLAGS := -static -I$(abspath $(OUTPUT)/hiredis/include) -L$(abspath $(OUTPUT)/hiredis/lib) -lhiredis
 
-MODULES = proc
+MODULES = proc tcp
 REDIS_TOOLS = redis-graph-cli
 
 CARGO ?= $(shell which cargo)
@@ -138,7 +138,7 @@ $(patsubst %,$(OUTPUT)/%.o,$(BZS_APPS)): $(LIBBLAZESYM_HEADER)
 $(BZS_APPS): $(LIBBLAZESYM_OBJ)
 
 # Build application binary
-edr: $(OUTPUT)/edr.o $(OUTPUT)/proc.o $(LIBBPF_OBJ) | $(OUTPUT) hiredis
+edr: $(OUTPUT)/edr.o $(OUTPUT)/proc.o $(OUTPUT)/tcp.o $(LIBBPF_OBJ) | $(OUTPUT) hiredis
 	$(call msg,BINARY,$@)
 	$(Q)$(CC) $(CFLAGS) $^ -pthread $(ALL_LDFLAGS) $(REDIS_TOOLS_FLAGS) -lelf -lz -o $(BIN_OUTPUT)/$@
 
