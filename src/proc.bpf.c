@@ -39,7 +39,7 @@ int handle_exec(struct trace_event_raw_sched_process_exec *ctx)
 	e->uid = uid_gid >> 32;
 	e->gid = uid_gid & 0xffffffff;
 	e->pid = BPF_CORE_READ(task, pid);
-	e->pid = BPF_CORE_READ(task, tgid);
+	e->tgid = BPF_CORE_READ(task, tgid);
 	e->ppid = BPF_CORE_READ(task, real_parent, tgid);
 	e->sessionid = BPF_CORE_READ(task, sessionid);
     BPF_CORE_READ_INTO(&e->loginuid, task, loginuid);
@@ -50,23 +50,22 @@ int handle_exec(struct trace_event_raw_sched_process_exec *ctx)
 	bpf_probe_read_str(&e->filename, sizeof(e->filename),
 					   (void *)ctx + (ctx->__data_loc_filename & 0x1ff));
 
-	// Read commandline
+	// Read cmdline
 	uint64_t arg_start = BPF_CORE_READ(task, mm, arg_start);
 	uint64_t arg_end = BPF_CORE_READ(task, mm, arg_end);
 	size_t arg_len = arg_end - arg_start;
-	if (arg_len > MAX_COMMANDLINE_LEN - 1) {
-        // TODO: Signal to userspace program that commandline has been truncated
-		arg_len = MAX_COMMANDLINE_LEN - 1;
+	if (arg_len > MAX_CMDLINE_LEN - 1) {
+        // TODO: Signal to userspace program that cmdline has been truncated
+		arg_len = MAX_CMDLINE_LEN - 1;
 	}
 
-	int err = bpf_probe_read(&e->commandline, arg_len, (void *)arg_start);
+	int err = bpf_probe_read(&e->cmdline, arg_len, (void *)arg_start);
 	if (err < 0) {
-		bpf_printk("Error in bpf_probe_read: %d\n", err);
 		arg_len = 0;
 	}
 
-	e->commandline[arg_len] = '\0';
-	e->commandline_len = arg_len;
+	e->cmdline[arg_len] = '\0';
+	e->cmdline_len = arg_len;
 
 	bpf_perf_event_output(ctx, &pb, BPF_F_CURRENT_CPU, e, sizeof(*e));
 

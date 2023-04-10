@@ -34,7 +34,6 @@ int main(int argc, char **argv)
 
     while (!status.exiting) {
         sleep(1);
-        printf("status.exiting: %d\n", status.exiting);
     }
 
     pthread_join(proc, NULL);
