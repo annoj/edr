@@ -75,7 +75,7 @@ all: edr
 .PHONY: clean
 clean:
 	$(call msg,CLEAN)
-	$(Q)rm -rf $(OUTPUT) $(MODLUES)
+	$(Q)rm -rf $(OUTPUT) $(MODULES)
 
 $(OUTPUT) $(OUTPUT)/libbpf $(BPFTOOL_OUTPUT):
 	$(call msg,MKDIR,$@)
