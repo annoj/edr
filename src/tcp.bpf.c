@@ -33,11 +33,16 @@ int handle_set_state(struct trace_event_raw_inet_sock_set_state *ctx)
 		return 0;
 	}
 
+    e->oldstate = BPF_CORE_READ(ctx, oldstate);
+    e->newstate = BPF_CORE_READ(ctx, newstate);
+
+	if (!(e->oldstate == TCP_CLOSE && e->newstate == TCP_SYN_SENT)) {
+		return 0;
+	}
+
 	task = (struct task_struct *)bpf_get_current_task();
 
     e->pid = BPF_CORE_READ(task, pid);
-    e->oldstate = BPF_CORE_READ(ctx, oldstate);
-    e->newstate = BPF_CORE_READ(ctx, newstate);
     e->sport = BPF_CORE_READ(ctx, sport);
     e->dport = BPF_CORE_READ(ctx, dport);
     BPF_CORE_READ_INTO(&e->saddr, ctx, saddr);

@@ -34,7 +34,7 @@ static void store_event(void)
 
     snprintf(query, query_sz,
             "MERGE (p:Process {pid: %u}) "
-            "CREATE (p)-[:HAS_TCP_CONNECTION]->(:TCPConnection {"
+            "CREATE (p)-[:HAS_OUTBOUND_TCP_CONNECTION]->(:TCPConnection {"
                 "oldstate: %u, "
                 "newstate: %u, "
                 "sport: %u, "
