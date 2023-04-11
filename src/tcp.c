@@ -66,9 +66,6 @@ static void handle_event(void *ctx, int cpu, void *data, unsigned int data_sz)
 {
     time(&event->t);
     event->event = (struct tcp_outbound_event*)data;
-    event->daddr[0] = '\0';
-    event->saddr_v6[0] = '\0';
-    event->daddr_v6[0] = '\0';
     snprintf(event->saddr, 16, FORMAT_IP(event->event->saddr));
     snprintf(event->daddr, 16, FORMAT_IP(event->event->daddr));
     snprintf(event->saddr_v6, 39, FORMAT_IP_V6(event->event->saddr_v6));
