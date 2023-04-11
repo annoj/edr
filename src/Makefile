@@ -22,7 +22,7 @@ INCLUDES := -I$(OUTPUT) -I../lib/libbpf/include/uapi -I$(dir $(VMLINUX)) -I$(abs
 CFLAGS := -g -Wall
 ALL_LDFLAGS := $(LDFLAGS) $(EXTRA_LDFLAGS)
 
-REDIS_TOOLS_FLAGS := -static -I$(abspath $(OUTPUT)/hiredis/include) -L$(abspath $(OUTPUT)/hiredis/lib) -lhiredis
+REDIS_TOOLS_FLAGS := -I$(abspath $(OUTPUT)/hiredis/include) -L$(abspath $(OUTPUT)/hiredis/lib) -lhiredis
 
 MODULES = proc tcp
 REDIS_TOOLS = redis-graph-cli
@@ -141,6 +141,14 @@ $(BZS_APPS): $(LIBBLAZESYM_OBJ)
 edr: $(OUTPUT)/edr.o $(OUTPUT)/proc.o $(OUTPUT)/tcp.o $(LIBBPF_OBJ) | $(OUTPUT) hiredis
 	$(call msg,BINARY,$@)
 	$(Q)$(CC) $(CFLAGS) $^ -pthread $(ALL_LDFLAGS) $(REDIS_TOOLS_FLAGS) -lelf -lz -o $(BIN_OUTPUT)/$@
+
+.PHONY: run
+run: | edr
+	sudo LD_PRELOAD=$(OUTPUT)/hiredis/lib/libhiredis.so.1.0.0 $(BIN_OUTPUT)/edr
+
+.PHONY: debug
+debug: | edr
+	sudo LD_PRELOAD=$(OUTPUT)/hiredis/lib/libhiredis.so.1.0.0 gdb $(BIN_OUTPUT)/edr
 
 # delete failed targets
 .DELETE_ON_ERROR:
