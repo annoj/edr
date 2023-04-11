@@ -5,7 +5,7 @@
 #define MAX_FILENAME_LEN 512
 #define MAX_CMDLINE_LEN 2048
 
-struct event {
+struct proc_exec_event {
 	unsigned int pid;
 	unsigned int ppid;
     unsigned int tgid;

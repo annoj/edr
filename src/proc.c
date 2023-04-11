@@ -13,7 +13,7 @@ static redisContext *redis_ctx = NULL;
 static struct store_event {
     time_t t;
     char cmdline[MAX_CMDLINE_LEN];
-    struct event *event;
+    struct proc_exec_event *event;
 } *event;
 
 static int libbpf_print_fn(enum libbpf_print_level level, const char *format,
@@ -23,7 +23,7 @@ static int libbpf_print_fn(enum libbpf_print_level level, const char *format,
 }
 
 // store_event() uses global struct store_event *event and redisContext *redis_ctx
-void store_event(void)
+static void store_event(void)
 {
     size_t query_sz = 0xffff;
     char query[query_sz];
@@ -59,7 +59,7 @@ void store_event(void)
     }
 }
 
-void string_replace(char *string, size_t len, char substituent, char substitute)
+static void string_replace(char *string, size_t len, char substituent, char substitute)
 {
 	for (size_t i = 0; i < len - 1; i++) {
 		if (string[i] == substituent) {
@@ -68,10 +68,10 @@ void string_replace(char *string, size_t len, char substituent, char substitute)
 	}
 }
 
-void handle_event(void *ctx, int cpu, void *data, unsigned int data_sz)
+static void handle_event(void *ctx, int cpu, void *data, unsigned int data_sz)
 {
     time(&event->t);
-    event->event = (struct event*)data;
+    event->event = (struct proc_exec_event*)data;
     memcpy(event->cmdline, event->event->cmdline, event->event->cmdline_len);
     string_replace(event->cmdline, event->event->cmdline_len, '\0', ' ');
 
@@ -79,13 +79,13 @@ void handle_event(void *ctx, int cpu, void *data, unsigned int data_sz)
     store_event();
 }
 
-void cleanup_bpf_proc(struct proc_bpf *skel, struct perf_buffer *pb)
+static void cleanup_bpf_proc(struct proc_bpf *skel, struct perf_buffer *pb)
 {
     perf_buffer__free(pb);
     proc_bpf__destroy(skel);
 }
 
-int init_bpf_proc(struct proc_bpf **skel, struct perf_buffer **pb)
+static int init_bpf_proc(struct proc_bpf **skel, struct perf_buffer **pb)
 {
     int err;
 
@@ -126,7 +126,7 @@ out:
     return err;
 }
 
-int poll_bpf_proc(struct perf_buffer *pb, volatile bool *exiting)
+static int poll_bpf_proc(struct perf_buffer *pb, volatile bool *exiting)
 {
     int err = 0;
 

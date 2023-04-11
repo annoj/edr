@@ -17,14 +17,14 @@ struct {
 	__uint(type, BPF_MAP_TYPE_PERCPU_ARRAY);
 	__uint(max_entries, 1);
 	__type(key, int);
-	__type(value, struct event);
+	__type(value, struct proc_exec_event);
 } heap SEC(".maps");
 
 SEC("tp/sched/sched_process_exec")
 int handle_exec(struct trace_event_raw_sched_process_exec *ctx)
 {
 	struct task_struct *task;
-	struct event *e;
+	struct proc_exec_event *e;
 	int zero = 0;
 
 	// This should allocate/reserve memory for e
