@@ -1,7 +1,7 @@
 #ifndef __TCP_H_
 #define __TCP_H_
 
-struct tcp_event {
+struct tcp_outbound_event {
 	unsigned int pid;
     int oldstate;
     int newstate;

@@ -16,7 +16,7 @@ static struct store_tcp_event {
     char daddr[16];
     char saddr_v6[39];
     char daddr_v6[39];
-    struct tcp_event *event;
+    struct tcp_outbound_event *event;
 } *event;
 
 static int libbpf_print_fn(enum libbpf_print_level level, const char *format,
@@ -62,7 +62,7 @@ static void store_event(void)
 static void handle_event(void *ctx, int cpu, void *data, unsigned int data_sz)
 {
     time(&event->t);
-    event->event = (struct tcp_event*)data;
+    event->event = (struct tcp_outbound_event*)data;
     event->daddr[0] = '\0';
     event->saddr_v6[0] = '\0';
     event->daddr_v6[0] = '\0';

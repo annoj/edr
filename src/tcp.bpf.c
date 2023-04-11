@@ -17,13 +17,13 @@ struct {
 	__uint(type, BPF_MAP_TYPE_PERCPU_ARRAY);
 	__uint(max_entries, 1);
 	__type(key, int);
-	__type(value, struct tcp_event);
+	__type(value, struct tcp_outbound_event);
 } heap SEC(".maps");
 
 SEC("tp/sock/inet_sock_set_state")
 int handle_set_state(struct trace_event_raw_inet_sock_set_state *ctx)
 {
-	struct tcp_event *e;
+	struct tcp_outbound_event *e;
 	struct task_struct *task;
 	int zero = 0;
 
