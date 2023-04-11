@@ -11,6 +11,7 @@ struct status {
     volatile bool exiting;
     volatile int proc_result;
     volatile int tcp_result;
+    volatile int file_result;
 };
 
 #endif

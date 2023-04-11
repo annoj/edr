@@ -1,6 +1,6 @@
 #include "edr.h"
-#include "proc.h"
-#include "proc.skel.h"
+#include "file.h"
+#include "file.skel.h"
 
 #include <bpf/libbpf.h>
 #include <hiredis/hiredis.h>
@@ -10,10 +10,9 @@
 #include <unistd.h>
 
 static redisContext *redis_ctx = NULL;
-static struct store_event {
+static struct store_file_event {
     time_t t;
-    char cmdline[MAX_PROC_CMDLINE_LEN];
-    struct proc_exec_event *event;
+    struct file_open_event *event;
 } *event;
 
 static int libbpf_print_fn(enum libbpf_print_level level, const char *format,
@@ -30,23 +29,14 @@ static void store_event(void)
     redisReply *reply;
 
     snprintf(query, query_sz,
-            "MERGE (p:Process {pid: %d}) "
-            "CREATE (p)-[:HAS_CHILD_PROCESS]->(:Process {"
-                "pid: %d, "
-                "tgid: %d, "
-                "ts: %ld, "
-                "loginuid: %d, "
-                "uid: %d, "
-                "gid: %d, "
-                "sessionid: %d, "
-                "comm: '%s', "
-                "cmdline: '%s', "
-                "filename: '%s'"
+            "MERGE (p:Process {pid: %u}) "
+            "CREATE (p)-[:HAS_OPEN_FILE]->(:FileOpen {"
+                "filename: '%s', "
+                "flags: 0x%x, "
+                "mode: 0x%x"
             "})",
-            event->event->ppid, event->event->tgid, event->event->pid,
-            (long int)event->t, event->event->loginuid, event->event->uid,
-            event->event->gid, event->event->sessionid, event->event->comm,
-            event->cmdline, event->event->filename);
+            event->event->pid, event->event->filename, event->event->flags,
+            event->event->mode);
 
     reply = redisCommand(redis_ctx, "GRAPH.QUERY %s %s", REDIS_DATABASE, query);
 
@@ -59,52 +49,41 @@ static void store_event(void)
     }
 }
 
-static void string_replace(char *string, size_t len, char substituent, char substitute)
-{
-	for (size_t i = 0; i < len - 1; i++) {
-		if (string[i] == substituent) {
-			string[i] = substitute;
-		}
-	}
-}
-
 static void handle_event(void *ctx, int cpu, void *data, unsigned int data_sz)
 {
     time(&event->t);
-    event->event = (struct proc_exec_event*)data;
-    memcpy(event->cmdline, event->event->cmdline, event->event->cmdline_len);
-    string_replace(event->cmdline, event->event->cmdline_len, '\0', ' ');
+    event->event = (struct file_open_event*)data;
 
     // store_event() uses global struct store_event *event and redisContext *redis_ctx
     store_event();
 }
 
-static void cleanup_bpf_proc(struct proc_bpf *skel, struct perf_buffer *pb)
+static void cleanup_bpf_file(struct file_bpf *skel, struct perf_buffer *pb)
 {
     perf_buffer__free(pb);
-    proc_bpf__destroy(skel);
+    file_bpf__destroy(skel);
 }
 
-static int init_bpf_proc(struct proc_bpf **skel, struct perf_buffer **pb)
+static int init_bpf_file(struct file_bpf **skel, struct perf_buffer **pb)
 {
     int err;
 
     libbpf_set_strict_mode(LIBBPF_STRICT_ALL);
     libbpf_set_print(libbpf_print_fn);
 
-    *skel = proc_bpf__open();
+    *skel = file_bpf__open();
     if (!*skel) {
         fprintf(stderr, "Failed to open BPF skeleton.\n");
         return 1;
     }
 
-    err = proc_bpf__load(*skel);
+    err = file_bpf__load(*skel);
     if (err) {
         fprintf(stderr, "Failed to attach to BPF skeleton.\n");
         goto out;
     }
 
-    err = proc_bpf__attach(*skel);
+    err = file_bpf__attach(*skel);
     if (err) {
         fprintf(stderr, "Failed to attach to BPF skeleton.\n");
         goto out;
@@ -120,13 +99,13 @@ static int init_bpf_proc(struct proc_bpf **skel, struct perf_buffer **pb)
 
 out:
     if (err) {
-        cleanup_bpf_proc(*skel, *pb);
+        cleanup_bpf_file(*skel, *pb);
     }
 
     return err;
 }
 
-static int poll_bpf_proc(struct perf_buffer *pb, volatile bool *exiting)
+static int poll_bpf_file(struct perf_buffer *pb, volatile bool *exiting)
 {
     int err = 0;
 
@@ -147,13 +126,13 @@ static int poll_bpf_proc(struct perf_buffer *pb, volatile bool *exiting)
     return err;
 }
 
-void *trace_proc(void *status)
+void *trace_file(void *status)
 {
     struct perf_buffer *pb = NULL;
-    struct proc_bpf *skel = NULL;
+    struct file_bpf *skel = NULL;
     int err = 0;
 
-    err = init_bpf_proc(&skel, &pb);
+    err = init_bpf_file(&skel, &pb);
     if (err) {
         goto cleanup;
     }
@@ -172,13 +151,13 @@ void *trace_proc(void *status)
         goto cleanup;
     }
 
-    err = poll_bpf_proc(pb, &((struct status *)status)->exiting);
+    err = poll_bpf_file(pb, &((struct status *)status)->exiting);
 
 cleanup:
     redisFree(redis_ctx);
-    cleanup_bpf_proc(skel, pb);
+    cleanup_bpf_file(skel, pb);
 
-    ((struct status *)status)->proc_result = err;
+    ((struct status *)status)->file_result = err;
     ((struct status *)status)->exiting = true;
 
     return NULL;

@@ -1,6 +1,7 @@
 #include "edr.h"
 #include "proc.h"
 #include "tcp.h"
+#include "file.h"
 
 #include <pthread.h>
 #include <signal.h>
@@ -13,6 +14,7 @@ struct status status = {.exiting = false};
 
 pthread_t proc;
 pthread_t tcp;
+pthread_t file;
 
 void handle_exit_signal(int signal)
 {
@@ -20,6 +22,7 @@ void handle_exit_signal(int signal)
     status.exiting = true;
     pthread_join(proc, NULL);
     pthread_join(tcp, NULL);
+    pthread_join(file, NULL);
 }
 
 int main(int argc, char **argv)
@@ -39,12 +42,18 @@ int main(int argc, char **argv)
         fprintf(stderr, "Could not create tcp thread, %s\n", strerror(err));
     }
 
+    err = pthread_create(&file, NULL, trace_file, (void *)&status);
+    if (err) {
+        fprintf(stderr, "Could not create file thread, %s\n", strerror(err));
+    }
+
     while (!status.exiting) {
         sleep(1);
     }
 
     pthread_join(proc, NULL);
     pthread_join(tcp, NULL);
+    pthread_join(file, NULL);
 
     return 1;
 }

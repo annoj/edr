@@ -54,9 +54,9 @@ int handle_exec(struct trace_event_raw_sched_process_exec *ctx)
 	uint64_t arg_start = BPF_CORE_READ(task, mm, arg_start);
 	uint64_t arg_end = BPF_CORE_READ(task, mm, arg_end);
 	size_t arg_len = arg_end - arg_start;
-	if (arg_len > MAX_CMDLINE_LEN - 1) {
+	if (arg_len > MAX_PROC_CMDLINE_LEN - 1) {
         // TODO: Signal to userspace program that cmdline has been truncated
-		arg_len = MAX_CMDLINE_LEN - 1;
+		arg_len = MAX_PROC_CMDLINE_LEN - 1;
 	}
 
 	int err = bpf_probe_read(&e->cmdline, arg_len, (void *)arg_start);
