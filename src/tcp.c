@@ -63,24 +63,23 @@ static void handle_event(void *ctx, int cpu, void *data, unsigned int data_sz)
 {
     time(&event->t);
     event->event = (struct tcp_event*)data;
-    event->saddr[0] = '\0';
     event->daddr[0] = '\0';
     event->saddr_v6[0] = '\0';
     event->daddr_v6[0] = '\0';
-    // snprintf(event->saddr, "%d.%d.%d.%d", event->event->saddr[0],
-    //          event->event->saddr[1], event->event->saddr[2],
-    //          event->event->saddr[3]);
-    // snprintf(event->daddr, "%d.%d.%d.%d", event->event->daddr[0],
-    //          event->event->daddr[1], event->event->daddr[2],
-    //          event->event->daddr[3]);
-    // snprintf(event->saddr_v6, "%x:%x:%x:%x:%x:%x:%x:%x", event->event->saddr_v6[0],
-    //          event->event->saddr_v6[1], event->event->saddr_v6[2], event->event->saddr_v6[3],
-    //          event->event->saddr_v6[4], event->event->saddr_v6[5], event->event->saddr_v6[6],
-    //          event->event->saddr_v6[7]);
-    // snprintf(event->daddr_v6, "%x:%x:%x:%x:%x:%x:%x:%x", event->event->daddr_v6[0],
-    //          event->event->daddr_v6[1], event->event->daddr_v6[2], event->event->daddr_v6[3],
-    //          event->event->daddr_v6[4], event->event->daddr_v6[5], event->event->daddr_v6[6],
-    //          event->event->daddr_v6[7]);
+    snprintf(event->saddr, 16, "%d.%d.%d.%d", event->event->saddr[0],
+             event->event->saddr[1], event->event->saddr[2],
+             event->event->saddr[3]);
+    snprintf(event->daddr, 16, "%d.%d.%d.%d", event->event->daddr[0],
+             event->event->daddr[1], event->event->daddr[2],
+             event->event->daddr[3]);
+    snprintf(event->saddr_v6, 39, "%x:%x:%x:%x:%x:%x:%x:%x", event->event->saddr_v6[0],
+             event->event->saddr_v6[1], event->event->saddr_v6[2], event->event->saddr_v6[3],
+             event->event->saddr_v6[4], event->event->saddr_v6[5], event->event->saddr_v6[6],
+             event->event->saddr_v6[7]);
+    snprintf(event->daddr_v6, 39, "%x:%x:%x:%x:%x:%x:%x:%x", event->event->daddr_v6[0],
+             event->event->daddr_v6[1], event->event->daddr_v6[2], event->event->daddr_v6[3],
+             event->event->daddr_v6[4], event->event->daddr_v6[5], event->event->daddr_v6[6],
+             event->event->daddr_v6[7]);
 
     // store_event() uses global struct store_event *event and redisContext *redis_ctx
     store_event();
