@@ -59,6 +59,9 @@ static void store_event(void)
     }
 }
 
+#define FORMAT_IP(ip) "%d.%d.%d.%d", ip[0], ip[1], ip[2], ip[3]
+#define FORMAT_IP_V6(ip) "%x:%x:%x:%x:%x:%x:%x:%x", ip[0], ip[1], ip[2], ip[3], ip[4], ip[5], ip[6], ip[7]
+
 static void handle_event(void *ctx, int cpu, void *data, unsigned int data_sz)
 {
     time(&event->t);
@@ -66,20 +69,10 @@ static void handle_event(void *ctx, int cpu, void *data, unsigned int data_sz)
     event->daddr[0] = '\0';
     event->saddr_v6[0] = '\0';
     event->daddr_v6[0] = '\0';
-    snprintf(event->saddr, 16, "%d.%d.%d.%d", event->event->saddr[0],
-             event->event->saddr[1], event->event->saddr[2],
-             event->event->saddr[3]);
-    snprintf(event->daddr, 16, "%d.%d.%d.%d", event->event->daddr[0],
-             event->event->daddr[1], event->event->daddr[2],
-             event->event->daddr[3]);
-    snprintf(event->saddr_v6, 39, "%x:%x:%x:%x:%x:%x:%x:%x", event->event->saddr_v6[0],
-             event->event->saddr_v6[1], event->event->saddr_v6[2], event->event->saddr_v6[3],
-             event->event->saddr_v6[4], event->event->saddr_v6[5], event->event->saddr_v6[6],
-             event->event->saddr_v6[7]);
-    snprintf(event->daddr_v6, 39, "%x:%x:%x:%x:%x:%x:%x:%x", event->event->daddr_v6[0],
-             event->event->daddr_v6[1], event->event->daddr_v6[2], event->event->daddr_v6[3],
-             event->event->daddr_v6[4], event->event->daddr_v6[5], event->event->daddr_v6[6],
-             event->event->daddr_v6[7]);
+    snprintf(event->saddr, 16, FORMAT_IP(event->event->saddr));
+    snprintf(event->daddr, 16, FORMAT_IP(event->event->daddr));
+    snprintf(event->saddr_v6, 39, FORMAT_IP_V6(event->event->saddr_v6));
+    snprintf(event->daddr_v6, 39, FORMAT_IP_V6(event->event->daddr_v6));
 
     // store_event() uses global struct store_event *event and redisContext *redis_ctx
     store_event();
