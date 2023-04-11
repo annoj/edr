@@ -24,6 +24,7 @@ SEC("tp/sock/inet_sock_set_state")
 int handle_set_state(struct trace_event_raw_inet_sock_set_state *ctx)
 {
 	struct tcp_event *e;
+	struct task_struct *task;
 	int zero = 0;
 
 	// This should allocate/reserve memory for e
@@ -32,7 +33,9 @@ int handle_set_state(struct trace_event_raw_inet_sock_set_state *ctx)
 		return 0;
 	}
 
-    e->pid = BPF_CORE_READ(ctx, ent.pid);
+	task = (struct task_struct *)bpf_get_current_task();
+
+    e->pid = BPF_CORE_READ(task, pid);
     e->oldstate = BPF_CORE_READ(ctx, oldstate);
     e->newstate = BPF_CORE_READ(ctx, newstate);
     e->sport = BPF_CORE_READ(ctx, sport);

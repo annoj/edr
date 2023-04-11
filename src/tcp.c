@@ -48,8 +48,6 @@ static void store_event(void)
             event->event->sport, event->event->dport, event->saddr, event->daddr,
             event->saddr_v6, event->daddr_v6);
 
-    printf("%s\n", query);
-
     reply = redisCommand(redis_ctx, "GRAPH.QUERY %s %s", REDIS_DATABASE, query);
 
     if (!reply) {
