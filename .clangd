@@ -1,0 +1,7 @@
+CompileFlags:
+    Add: [
+        -I./.output,
+        -I./.output/hiredis/include,
+        -I../lib/libbpf/include,
+        -I../vmlinux
+    ]
