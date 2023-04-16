@@ -1,5 +1,5 @@
-#include "edr.h"
 #include "file.h"
+#include "edr.h"
 #include "file.skel.h"
 
 #include <bpf/libbpf.h>
@@ -11,154 +11,160 @@
 
 static redisContext *redis_ctx = NULL;
 static struct store_file_event {
-    time_t t;
-    struct file_open_event *event;
+        time_t t;
+        struct file_open_event *event;
 } *event;
 
 static int libbpf_print_fn(enum libbpf_print_level level, const char *format,
                            va_list args)
 {
-    return vfprintf(stderr, format, args);
+        return vfprintf(stderr, format, args);
 }
 
-// store_event() uses global struct store_event *event and redisContext *redis_ctx
+// store_event() uses global struct store_event *event and redisContext
+// *redis_ctx
 static void store_event(void)
 {
-    size_t query_sz = 0xffff;
-    char query[query_sz];
-    redisReply *reply;
+        size_t query_sz = 0xffff;
+        char query[query_sz];
+        redisReply *reply;
 
-    snprintf(query, query_sz,
-            "MERGE (p:Process {pid: %u}) "
-            "CREATE (p)-[:HAS_OPEN_FILE]->(:FileOpen {"
-                "filename: '%s', "
-                "flags: 0x%x, "
-                "mode: 0x%x"
-            "})",
-            event->event->pid, event->event->filename, event->event->flags,
-            event->event->mode);
+        snprintf(query, query_sz,
+                 "MERGE (p:Process {pid: %u}) "
+                 "CREATE (p)-[:HAS_OPEN_FILE]->(:FileOpen {"
+                         "filename: '%s', "
+                         "flags: 0x%x, "
+                         "mode: 0x%x"
+                 "})",
+                 event->event->pid, event->event->filename, event->event->flags,
+                 event->event->mode);
 
-    reply = redisCommand(redis_ctx, "GRAPH.QUERY %s %s", REDIS_DATABASE, query);
+        reply =
+            redisCommand(redis_ctx, "GRAPH.QUERY %s %s", REDIS_DATABASE, query);
 
-    if (!reply) {
-        fprintf(stderr, "Could not store event, no reply from redis\n");
-    }
+        if (!reply) {
+                fprintf(stderr, "Could not store event, no reply from redis\n");
+        }
 
-    if (reply->type == REDIS_REPLY_ERROR) {
-        fprintf(stderr, "Could not store event, error: %s\n", reply->str);
-    }
+        if (reply->type == REDIS_REPLY_ERROR) {
+                fprintf(stderr, "Could not store event, error: %s\n",
+                        reply->str);
+        }
 }
 
 static void handle_event(void *ctx, int cpu, void *data, unsigned int data_sz)
 {
-    time(&event->t);
-    event->event = (struct file_open_event*)data;
+        time(&event->t);
+        event->event = (struct file_open_event *)data;
 
-    // store_event() uses global struct store_event *event and redisContext *redis_ctx
-    store_event();
+        // store_event() uses global struct store_event *event and redisContext
+        // *redis_ctx
+        store_event();
 }
 
 static void cleanup_bpf_file(struct file_bpf *skel, struct perf_buffer *pb)
 {
-    perf_buffer__free(pb);
-    file_bpf__destroy(skel);
+        perf_buffer__free(pb);
+        file_bpf__destroy(skel);
 }
 
 static int init_bpf_file(struct file_bpf **skel, struct perf_buffer **pb)
 {
-    int err;
+        int err;
 
-    libbpf_set_strict_mode(LIBBPF_STRICT_ALL);
-    libbpf_set_print(libbpf_print_fn);
+        libbpf_set_strict_mode(LIBBPF_STRICT_ALL);
+        libbpf_set_print(libbpf_print_fn);
 
-    *skel = file_bpf__open();
-    if (!*skel) {
-        fprintf(stderr, "Failed to open BPF skeleton.\n");
-        return 1;
-    }
+        *skel = file_bpf__open();
+        if (!*skel) {
+                fprintf(stderr, "Failed to open BPF skeleton.\n");
+                return 1;
+        }
 
-    err = file_bpf__load(*skel);
-    if (err) {
-        fprintf(stderr, "Failed to attach to BPF skeleton.\n");
-        goto out;
-    }
+        err = file_bpf__load(*skel);
+        if (err) {
+                fprintf(stderr, "Failed to attach to BPF skeleton.\n");
+                goto out;
+        }
 
-    err = file_bpf__attach(*skel);
-    if (err) {
-        fprintf(stderr, "Failed to attach to BPF skeleton.\n");
-        goto out;
-    }
+        err = file_bpf__attach(*skel);
+        if (err) {
+                fprintf(stderr, "Failed to attach to BPF skeleton.\n");
+                goto out;
+        }
 
-    *pb = perf_buffer__new(bpf_map__fd((*skel)->maps.pb),
-                          8 /* 8 pages (32 KB) per CPU */,
-                          handle_event, NULL, NULL, NULL);
-    if (libbpf_get_error(*pb)) {
-        err = 1;
-        fprintf(stderr, "Failed to create buffer.\n");
-    }
+        *pb = perf_buffer__new(bpf_map__fd((*skel)->maps.pb),
+                               8 /* 8 pages (32 KB) per CPU */, handle_event,
+                               NULL, NULL, NULL);
+        if (libbpf_get_error(*pb)) {
+                err = 1;
+                fprintf(stderr, "Failed to create buffer.\n");
+        }
 
 out:
-    if (err) {
-        cleanup_bpf_file(*skel, *pb);
-    }
+        if (err) {
+                cleanup_bpf_file(*skel, *pb);
+        }
 
-    return err;
+        return err;
 }
 
 static int poll_bpf_file(struct perf_buffer *pb, volatile bool *exiting)
 {
-    int err = 0;
+        int err = 0;
 
-    while (!*exiting) {
-        err = perf_buffer__poll(pb, 100 /* timeout in ms */);
+        while (!*exiting) {
+                err = perf_buffer__poll(pb, 100 /* timeout in ms */);
 
-        if (err == -EINTR) {
-            err = 0;
-            break;
+                if (err == -EINTR) {
+                        err = 0;
+                        break;
+                }
+
+                if (err < 0) {
+                        printf("Error polling perf buffer: %d.\n", err);
+                        break;
+                }
         }
 
-        if (err < 0) {
-            printf("Error polling perf buffer: %d.\n", err);
-            break;
-        }
-    }
-
-    return err;
+        return err;
 }
 
 void *trace_file(void *status)
 {
-    struct perf_buffer *pb = NULL;
-    struct file_bpf *skel = NULL;
-    int err = 0;
+        struct perf_buffer *pb = NULL;
+        struct file_bpf *skel = NULL;
+        int err = 0;
 
-    err = init_bpf_file(&skel, &pb);
-    if (err) {
-        goto cleanup;
-    }
+        err = init_bpf_file(&skel, &pb);
+        if (err) {
+                goto cleanup;
+        }
 
-    redis_ctx = redisConnect(REDIS_HOST, REDIS_PORT);
-    if (redis_ctx->err) {
-        fprintf(stderr, "Error initializing redis context: %s\n", redis_ctx->errstr);
-        err = redis_ctx->err;
-        goto cleanup;
-    }
+        redis_ctx = redisConnect(REDIS_HOST, REDIS_PORT);
+        if (redis_ctx->err) {
+                fprintf(stderr, "Error initializing redis context: %s\n",
+                        redis_ctx->errstr);
+                err = redis_ctx->err;
+                goto cleanup;
+        }
 
-    event = malloc(sizeof(*event));
-    if (!event) {
-        err = errno;
-        fprintf(stderr, "Error allocating memory for event: %s\n", strerror(err));
-        goto cleanup;
-    }
+        event = malloc(sizeof(*event));
+        if (!event) {
+                err = errno;
+                fprintf(stderr, "Error allocating memory for event: %s\n",
+                        strerror(err));
+                goto cleanup;
+        }
 
-    err = poll_bpf_file(pb, &((struct status *)status)->exiting);
+        err = poll_bpf_file(pb, &((struct status *)status)->exiting);
 
 cleanup:
-    redisFree(redis_ctx);
-    cleanup_bpf_file(skel, pb);
+        redisFree(redis_ctx);
+        cleanup_bpf_file(skel, pb);
 
-    ((struct status *)status)->file_result = err;
-    ((struct status *)status)->exiting = true;
+        ((struct status *)status)->file_result = err;
+        ((struct status *)status)->exiting = true;
 
-    return NULL;
+        return NULL;
 }

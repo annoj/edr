@@ -1,5 +1,5 @@
-#include "edr.h"
 #include "tcp.h"
+#include "edr.h"
 #include "tcp.skel.h"
 
 #include <bpf/libbpf.h>
@@ -11,171 +11,181 @@
 
 static redisContext *redis_ctx = NULL;
 static struct store_tcp_event {
-    time_t t;
-    char saddr[16];
-    char daddr[16];
-    char saddr_v6[39];
-    char daddr_v6[39];
-    struct tcp_outbound_event *event;
+        time_t t;
+        char saddr[16];
+        char daddr[16];
+        char saddr_v6[39];
+        char daddr_v6[39];
+        struct tcp_outbound_event *event;
 } *event;
 
 static int libbpf_print_fn(enum libbpf_print_level level, const char *format,
                            va_list args)
 {
-    return vfprintf(stderr, format, args);
+        return vfprintf(stderr, format, args);
 }
 
-// store_event() uses global struct store_event *event and redisContext *redis_ctx
+// store_event() uses global struct store_event *event and redisContext
+// *redis_ctx
 static void store_event(void)
 {
-    size_t query_sz = 0xffff;
-    char query[query_sz];
-    redisReply *reply;
+        size_t query_sz = 0xffff;
+        char query[query_sz];
+        redisReply *reply;
 
-    snprintf(query, query_sz,
-            "MERGE (p:Process {pid: %u}) "
-            "CREATE (p)-[:HAS_OUTBOUND_TCP_CONNECTION]->(:TCPConnection {"
-                "oldstate: %u, "
-                "newstate: %u, "
-                "sport: %u, "
-                "dport: %u, "
-                "saddr: '%s', "
-                "daddr: '%s', "
-                "saddr_v6: '%s', "
-                "daddr_v6: '%s'"
-            "})",
-            event->event->pid, event->event->oldstate, event->event->newstate,
-            event->event->sport, event->event->dport, event->saddr, event->daddr,
-            event->saddr_v6, event->daddr_v6);
+        snprintf(query, query_sz,
+                 "MERGE (p:Process {pid: %u}) "
+                 "CREATE (p)-[:HAS_OUTBOUND_TCP_CONNECTION]->(:TCPConnection {"
+                         "oldstate: %u, "
+                         "newstate: %u, "
+                         "sport: %u, "
+                         "dport: %u, "
+                         "saddr: '%s', "
+                         "daddr: '%s', "
+                         "saddr_v6: '%s', "
+                         "asdf"
+                         "daddr_v6: '%s'"
+                 "})",
+                 event->event->pid, event->event->oldstate,
+                 event->event->newstate, event->event->sport,
+                 event->event->dport, event->saddr, event->daddr,
+                 event->saddr_v6, event->daddr_v6);
 
-    reply = redisCommand(redis_ctx, "GRAPH.QUERY %s %s", REDIS_DATABASE, query);
+        reply =
+            redisCommand(redis_ctx, "GRAPH.QUERY %s %s", REDIS_DATABASE, query);
 
-    if (!reply) {
-        fprintf(stderr, "Could not store event, no reply from redis\n");
-    }
+        if (!reply) {
+                fprintf(stderr, "Could not store event, no reply from redis\n");
+        }
 
-    if (reply->type == REDIS_REPLY_ERROR) {
-        fprintf(stderr, "Could not store event, error: %s\n", reply->str);
-    }
+        if (reply->type == REDIS_REPLY_ERROR) {
+                fprintf(stderr, "Could not store event, error: %s\n",
+                        reply->str);
+        }
 }
 
 #define FORMAT_IP(ip) "%d.%d.%d.%d", ip[0], ip[1], ip[2], ip[3]
-#define FORMAT_IP_V6(ip) "%x:%x:%x:%x:%x:%x:%x:%x", ip[0], ip[1], ip[2], ip[3], ip[4], ip[5], ip[6], ip[7]
+#define FORMAT_IP_V6(ip)                                                       \
+        "%x:%x:%x:%x:%x:%x:%x:%x", ip[0], ip[1], ip[2], ip[3], ip[4], ip[5],   \
+            ip[6], ip[7]
 
 static void handle_event(void *ctx, int cpu, void *data, unsigned int data_sz)
 {
-    time(&event->t);
-    event->event = (struct tcp_outbound_event*)data;
-    snprintf(event->saddr, 16, FORMAT_IP(event->event->saddr));
-    snprintf(event->daddr, 16, FORMAT_IP(event->event->daddr));
-    snprintf(event->saddr_v6, 39, FORMAT_IP_V6(event->event->saddr_v6));
-    snprintf(event->daddr_v6, 39, FORMAT_IP_V6(event->event->daddr_v6));
+        time(&event->t);
+        event->event = (struct tcp_outbound_event *)data;
+        snprintf(event->saddr, 16, FORMAT_IP(event->event->saddr));
+        snprintf(event->daddr, 16, FORMAT_IP(event->event->daddr));
+        snprintf(event->saddr_v6, 39, FORMAT_IP_V6(event->event->saddr_v6));
+        snprintf(event->daddr_v6, 39, FORMAT_IP_V6(event->event->daddr_v6));
 
-    // store_event() uses global struct store_event *event and redisContext *redis_ctx
-    store_event();
+        // store_event() uses global struct store_event *event and redisContext
+        // *redis_ctx
+        store_event();
 }
 
 static void cleanup_bpf_tcp(struct tcp_bpf *skel, struct perf_buffer *pb)
 {
-    perf_buffer__free(pb);
-    tcp_bpf__destroy(skel);
+        perf_buffer__free(pb);
+        tcp_bpf__destroy(skel);
 }
 
 static int init_bpf_tcp(struct tcp_bpf **skel, struct perf_buffer **pb)
 {
-    int err;
+        int err;
 
-    libbpf_set_strict_mode(LIBBPF_STRICT_ALL);
-    libbpf_set_print(libbpf_print_fn);
+        libbpf_set_strict_mode(LIBBPF_STRICT_ALL);
+        libbpf_set_print(libbpf_print_fn);
 
-    *skel = tcp_bpf__open();
-    if (!*skel) {
-        fprintf(stderr, "Failed to open BPF skeleton.\n");
-        return 1;
-    }
+        *skel = tcp_bpf__open();
+        if (!*skel) {
+                fprintf(stderr, "Failed to open BPF skeleton.\n");
+                return 1;
+        }
 
-    err = tcp_bpf__load(*skel);
-    if (err) {
-        fprintf(stderr, "Failed to attach to BPF skeleton.\n");
-        goto out;
-    }
+        err = tcp_bpf__load(*skel);
+        if (err) {
+                fprintf(stderr, "Failed to attach to BPF skeleton.\n");
+                goto out;
+        }
 
-    err = tcp_bpf__attach(*skel);
-    if (err) {
-        fprintf(stderr, "Failed to attach to BPF skeleton.\n");
-        goto out;
-    }
+        err = tcp_bpf__attach(*skel);
+        if (err) {
+                fprintf(stderr, "Failed to attach to BPF skeleton.\n");
+                goto out;
+        }
 
-    *pb = perf_buffer__new(bpf_map__fd((*skel)->maps.pb),
-                          8 /* 8 pages (32 KB) per CPU */,
-                          handle_event, NULL, NULL, NULL);
-    if (libbpf_get_error(*pb)) {
-        err = 1;
-        fprintf(stderr, "Failed to create buffer.\n");
-    }
+        *pb = perf_buffer__new(bpf_map__fd((*skel)->maps.pb),
+                               8 /* 8 pages (32 KB) per CPU */, handle_event,
+                               NULL, NULL, NULL);
+        if (libbpf_get_error(*pb)) {
+                err = 1;
+                fprintf(stderr, "Failed to create buffer.\n");
+        }
 
 out:
-    if (err) {
-        cleanup_bpf_tcp(*skel, *pb);
-    }
+        if (err) {
+                cleanup_bpf_tcp(*skel, *pb);
+        }
 
-    return err;
+        return err;
 }
 
 static int poll_bpf_tcp(struct perf_buffer *pb, volatile bool *exiting)
 {
-    int err = 0;
+        int err = 0;
 
-    while (!*exiting) {
-        err = perf_buffer__poll(pb, 100 /* timeout in ms */);
+        while (!*exiting) {
+                err = perf_buffer__poll(pb, 100 /* timeout in ms */);
 
-        if (err == -EINTR) {
-            err = 0;
-            break;
+                if (err == -EINTR) {
+                        err = 0;
+                        break;
+                }
+
+                if (err < 0) {
+                        printf("Error polling perf buffer: %d.\n", err);
+                        break;
+                }
         }
 
-        if (err < 0) {
-            printf("Error polling perf buffer: %d.\n", err);
-            break;
-        }
-    }
-
-    return err;
+        return err;
 }
 
 void *trace_tcp(void *status)
 {
-    struct perf_buffer *pb = NULL;
-    struct tcp_bpf *skel = NULL;
-    int err = 0;
+        struct perf_buffer *pb = NULL;
+        struct tcp_bpf *skel = NULL;
+        int err = 0;
 
-    err = init_bpf_tcp(&skel, &pb);
-    if (err) {
-        goto cleanup;
-    }
+        err = init_bpf_tcp(&skel, &pb);
+        if (err) {
+                goto cleanup;
+        }
 
-    redis_ctx = redisConnect(REDIS_HOST, REDIS_PORT);
-    if (redis_ctx->err) {
-        fprintf(stderr, "Error initializing redis context: %s\n", redis_ctx->errstr);
-        err = redis_ctx->err;
-        goto cleanup;
-    }
+        redis_ctx = redisConnect(REDIS_HOST, REDIS_PORT);
+        if (redis_ctx->err) {
+                fprintf(stderr, "Error initializing redis context: %s\n",
+                        redis_ctx->errstr);
+                err = redis_ctx->err;
+                goto cleanup;
+        }
 
-    event = malloc(sizeof(*event));
-    if (!event) {
-        err = errno;
-        fprintf(stderr, "Error allocating memory for event: %s\n", strerror(err));
-        goto cleanup;
-    }
+        event = malloc(sizeof(*event));
+        if (!event) {
+                err = errno;
+                fprintf(stderr, "Error allocating memory for event: %s\n",
+                        strerror(err));
+                goto cleanup;
+        }
 
-    err = poll_bpf_tcp(pb, &((struct status *)status)->exiting);
+        err = poll_bpf_tcp(pb, &((struct status *)status)->exiting);
 
 cleanup:
-    redisFree(redis_ctx);
-    cleanup_bpf_tcp(skel, pb);
+        redisFree(redis_ctx);
+        cleanup_bpf_tcp(skel, pb);
 
-    ((struct status *)status)->tcp_result = err;
-    ((struct status *)status)->exiting = true;
+        ((struct status *)status)->tcp_result = err;
+        ((struct status *)status)->exiting = true;
 
-    return NULL;
+        return NULL;
 }
