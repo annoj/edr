@@ -1,0 +1,247 @@
+[
+  {
+    "directory": ".",
+    "command": "cc -I. -I../include -I../include/uapi -g -O2 -Werror -Wall -std=gnu89 -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64    -c bpf.c -o /home/jona/edr/src/.output//libbpf/staticobjs/bpf.o",
+    "file": "/home/jona/edr/src/.output//libbpf/staticobjs/bpf.o"
+  },
+  {
+    "directory": ".",
+    "command": "cc -I. -I../include -I../include/uapi -g -O2 -Werror -Wall -std=gnu89 -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64    -c btf.c -o /home/jona/edr/src/.output//libbpf/staticobjs/btf.o",
+    "file": "/home/jona/edr/src/.output//libbpf/staticobjs/btf.o"
+  },
+  {
+    "directory": ".",
+    "command": "cc -I. -I../include -I../include/uapi -g -O2 -Werror -Wall -std=gnu89 -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64    -c libbpf.c -o /home/jona/edr/src/.output//libbpf/staticobjs/libbpf.o",
+    "file": "/home/jona/edr/src/.output//libbpf/staticobjs/libbpf.o"
+  },
+  {
+    "directory": ".",
+    "command": "cc -I. -I../include -I../include/uapi -g -O2 -Werror -Wall -std=gnu89 -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64    -c libbpf_errno.c -o /home/jona/edr/src/.output//libbpf/staticobjs/libbpf_errno.o",
+    "file": "/home/jona/edr/src/.output//libbpf/staticobjs/libbpf_errno.o"
+  },
+  {
+    "directory": ".",
+    "command": "cc -I. -I../include -I../include/uapi -g -O2 -Werror -Wall -std=gnu89 -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64    -c netlink.c -o /home/jona/edr/src/.output//libbpf/staticobjs/netlink.o",
+    "file": "/home/jona/edr/src/.output//libbpf/staticobjs/netlink.o"
+  },
+  {
+    "directory": ".",
+    "command": "cc -I. -I../include -I../include/uapi -g -O2 -Werror -Wall -std=gnu89 -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64    -c nlattr.c -o /home/jona/edr/src/.output//libbpf/staticobjs/nlattr.o",
+    "file": "/home/jona/edr/src/.output//libbpf/staticobjs/nlattr.o"
+  },
+  {
+    "directory": ".",
+    "command": "cc -I. -I../include -I../include/uapi -g -O2 -Werror -Wall -std=gnu89 -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64    -c str_error.c -o /home/jona/edr/src/.output//libbpf/staticobjs/str_error.o",
+    "file": "/home/jona/edr/src/.output//libbpf/staticobjs/str_error.o"
+  },
+  {
+    "directory": ".",
+    "command": "cc -I. -I../include -I../include/uapi -g -O2 -Werror -Wall -std=gnu89 -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64    -c libbpf_probes.c -o /home/jona/edr/src/.output//libbpf/staticobjs/libbpf_probes.o",
+    "file": "/home/jona/edr/src/.output//libbpf/staticobjs/libbpf_probes.o"
+  },
+  {
+    "directory": ".",
+    "command": "cc -I. -I../include -I../include/uapi -g -O2 -Werror -Wall -std=gnu89 -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64    -c bpf_prog_linfo.c -o /home/jona/edr/src/.output//libbpf/staticobjs/bpf_prog_linfo.o",
+    "file": "/home/jona/edr/src/.output//libbpf/staticobjs/bpf_prog_linfo.o"
+  },
+  {
+    "directory": ".",
+    "command": "cc -I. -I../include -I../include/uapi -g -O2 -Werror -Wall -std=gnu89 -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64    -c btf_dump.c -o /home/jona/edr/src/.output//libbpf/staticobjs/btf_dump.o",
+    "file": "/home/jona/edr/src/.output//libbpf/staticobjs/btf_dump.o"
+  },
+  {
+    "directory": ".",
+    "command": "cc -I. -I../include -I../include/uapi -g -O2 -Werror -Wall -std=gnu89 -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64    -c hashmap.c -o /home/jona/edr/src/.output//libbpf/staticobjs/hashmap.o",
+    "file": "/home/jona/edr/src/.output//libbpf/staticobjs/hashmap.o"
+  },
+  {
+    "directory": ".",
+    "command": "cc -I. -I../include -I../include/uapi -g -O2 -Werror -Wall -std=gnu89 -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64    -c ringbuf.c -o /home/jona/edr/src/.output//libbpf/staticobjs/ringbuf.o",
+    "file": "/home/jona/edr/src/.output//libbpf/staticobjs/ringbuf.o"
+  },
+  {
+    "directory": ".",
+    "command": "cc -I. -I../include -I../include/uapi -g -O2 -Werror -Wall -std=gnu89 -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64    -c strset.c -o /home/jona/edr/src/.output//libbpf/staticobjs/strset.o",
+    "file": "/home/jona/edr/src/.output//libbpf/staticobjs/strset.o"
+  },
+  {
+    "directory": ".",
+    "command": "cc -I. -I../include -I../include/uapi -g -O2 -Werror -Wall -std=gnu89 -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64    -c linker.c -o /home/jona/edr/src/.output//libbpf/staticobjs/linker.o",
+    "file": "/home/jona/edr/src/.output//libbpf/staticobjs/linker.o"
+  },
+  {
+    "directory": ".",
+    "command": "cc -I. -I../include -I../include/uapi -g -O2 -Werror -Wall -std=gnu89 -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64    -c gen_loader.c -o /home/jona/edr/src/.output//libbpf/staticobjs/gen_loader.o",
+    "file": "/home/jona/edr/src/.output//libbpf/staticobjs/gen_loader.o"
+  },
+  {
+    "directory": ".",
+    "command": "cc -I. -I../include -I../include/uapi -g -O2 -Werror -Wall -std=gnu89 -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64    -c relo_core.c -o /home/jona/edr/src/.output//libbpf/staticobjs/relo_core.o",
+    "file": "/home/jona/edr/src/.output//libbpf/staticobjs/relo_core.o"
+  },
+  {
+    "directory": ".",
+    "command": "cc -I. -I../include -I../include/uapi -g -O2 -Werror -Wall -std=gnu89 -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64    -c usdt.c -o /home/jona/edr/src/.output//libbpf/staticobjs/usdt.o",
+    "file": "/home/jona/edr/src/.output//libbpf/staticobjs/usdt.o"
+  },
+  {
+    "directory": ".",
+    "command": "cc -g -Wall -I.output -I../lib/libbpf/include/uapi -I../vmlinux/ -I/home/jona/edr/src/.output/hiredis/include -c edr.c -o .output/edr.o",
+    "file": ".output/edr.o"
+  },
+  {
+    "directory": ".",
+    "command": "clang -g -O2 -target bpf -D__TARGET_ARCH_x86 -I.output -I../lib/libbpf/include/uapi -I../vmlinux/ -I/home/jona/edr/src/.output/hiredis/include -idirafter /usr/local/include -idirafter /usr/lib/llvm-10/lib/clang/10.0.0/include -idirafter /usr/include/x86_64-linux-gnu -idirafter /usr/include -c proc.bpf.c -o .output/proc.bpf.o",
+    "file": ".output/proc.bpf.o"
+  },
+  {
+    "directory": ".",
+    "command": "gcc -I. -I../include -I../include/uapi -g -O2 -Werror -Wall -std=gnu89 -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64    -c bpf.c -o /home/jona/edr/src/.output/bpftool/bootstrap/libbpf/staticobjs/bpf.o",
+    "file": "/home/jona/edr/src/.output/bpftool/bootstrap/libbpf/staticobjs/bpf.o"
+  },
+  {
+    "directory": ".",
+    "command": "gcc -I. -I../include -I../include/uapi -g -O2 -Werror -Wall -std=gnu89 -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64    -c btf.c -o /home/jona/edr/src/.output/bpftool/bootstrap/libbpf/staticobjs/btf.o",
+    "file": "/home/jona/edr/src/.output/bpftool/bootstrap/libbpf/staticobjs/btf.o"
+  },
+  {
+    "directory": ".",
+    "command": "gcc -I. -I../include -I../include/uapi -g -O2 -Werror -Wall -std=gnu89 -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64    -c libbpf.c -o /home/jona/edr/src/.output/bpftool/bootstrap/libbpf/staticobjs/libbpf.o",
+    "file": "/home/jona/edr/src/.output/bpftool/bootstrap/libbpf/staticobjs/libbpf.o"
+  },
+  {
+    "directory": ".",
+    "command": "gcc -I. -I../include -I../include/uapi -g -O2 -Werror -Wall -std=gnu89 -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64    -c libbpf_errno.c -o /home/jona/edr/src/.output/bpftool/bootstrap/libbpf/staticobjs/libbpf_errno.o",
+    "file": "/home/jona/edr/src/.output/bpftool/bootstrap/libbpf/staticobjs/libbpf_errno.o"
+  },
+  {
+    "directory": ".",
+    "command": "gcc -I. -I../include -I../include/uapi -g -O2 -Werror -Wall -std=gnu89 -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64    -c netlink.c -o /home/jona/edr/src/.output/bpftool/bootstrap/libbpf/staticobjs/netlink.o",
+    "file": "/home/jona/edr/src/.output/bpftool/bootstrap/libbpf/staticobjs/netlink.o"
+  },
+  {
+    "directory": ".",
+    "command": "gcc -I. -I../include -I../include/uapi -g -O2 -Werror -Wall -std=gnu89 -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64    -c nlattr.c -o /home/jona/edr/src/.output/bpftool/bootstrap/libbpf/staticobjs/nlattr.o",
+    "file": "/home/jona/edr/src/.output/bpftool/bootstrap/libbpf/staticobjs/nlattr.o"
+  },
+  {
+    "directory": ".",
+    "command": "gcc -I. -I../include -I../include/uapi -g -O2 -Werror -Wall -std=gnu89 -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64    -c str_error.c -o /home/jona/edr/src/.output/bpftool/bootstrap/libbpf/staticobjs/str_error.o",
+    "file": "/home/jona/edr/src/.output/bpftool/bootstrap/libbpf/staticobjs/str_error.o"
+  },
+  {
+    "directory": ".",
+    "command": "gcc -I. -I../include -I../include/uapi -g -O2 -Werror -Wall -std=gnu89 -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64    -c libbpf_probes.c -o /home/jona/edr/src/.output/bpftool/bootstrap/libbpf/staticobjs/libbpf_probes.o",
+    "file": "/home/jona/edr/src/.output/bpftool/bootstrap/libbpf/staticobjs/libbpf_probes.o"
+  },
+  {
+    "directory": ".",
+    "command": "gcc -I. -I../include -I../include/uapi -g -O2 -Werror -Wall -std=gnu89 -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64    -c bpf_prog_linfo.c -o /home/jona/edr/src/.output/bpftool/bootstrap/libbpf/staticobjs/bpf_prog_linfo.o",
+    "file": "/home/jona/edr/src/.output/bpftool/bootstrap/libbpf/staticobjs/bpf_prog_linfo.o"
+  },
+  {
+    "directory": ".",
+    "command": "gcc -I. -I../include -I../include/uapi -g -O2 -Werror -Wall -std=gnu89 -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64    -c btf_dump.c -o /home/jona/edr/src/.output/bpftool/bootstrap/libbpf/staticobjs/btf_dump.o",
+    "file": "/home/jona/edr/src/.output/bpftool/bootstrap/libbpf/staticobjs/btf_dump.o"
+  },
+  {
+    "directory": ".",
+    "command": "gcc -I. -I../include -I../include/uapi -g -O2 -Werror -Wall -std=gnu89 -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64    -c hashmap.c -o /home/jona/edr/src/.output/bpftool/bootstrap/libbpf/staticobjs/hashmap.o",
+    "file": "/home/jona/edr/src/.output/bpftool/bootstrap/libbpf/staticobjs/hashmap.o"
+  },
+  {
+    "directory": ".",
+    "command": "gcc -I. -I../include -I../include/uapi -g -O2 -Werror -Wall -std=gnu89 -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64    -c ringbuf.c -o /home/jona/edr/src/.output/bpftool/bootstrap/libbpf/staticobjs/ringbuf.o",
+    "file": "/home/jona/edr/src/.output/bpftool/bootstrap/libbpf/staticobjs/ringbuf.o"
+  },
+  {
+    "directory": ".",
+    "command": "gcc -I. -I../include -I../include/uapi -g -O2 -Werror -Wall -std=gnu89 -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64    -c strset.c -o /home/jona/edr/src/.output/bpftool/bootstrap/libbpf/staticobjs/strset.o",
+    "file": "/home/jona/edr/src/.output/bpftool/bootstrap/libbpf/staticobjs/strset.o"
+  },
+  {
+    "directory": ".",
+    "command": "gcc -I. -I../include -I../include/uapi -g -O2 -Werror -Wall -std=gnu89 -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64    -c linker.c -o /home/jona/edr/src/.output/bpftool/bootstrap/libbpf/staticobjs/linker.o",
+    "file": "/home/jona/edr/src/.output/bpftool/bootstrap/libbpf/staticobjs/linker.o"
+  },
+  {
+    "directory": ".",
+    "command": "gcc -I. -I../include -I../include/uapi -g -O2 -Werror -Wall -std=gnu89 -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64    -c gen_loader.c -o /home/jona/edr/src/.output/bpftool/bootstrap/libbpf/staticobjs/gen_loader.o",
+    "file": "/home/jona/edr/src/.output/bpftool/bootstrap/libbpf/staticobjs/gen_loader.o"
+  },
+  {
+    "directory": ".",
+    "command": "gcc -I. -I../include -I../include/uapi -g -O2 -Werror -Wall -std=gnu89 -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64    -c relo_core.c -o /home/jona/edr/src/.output/bpftool/bootstrap/libbpf/staticobjs/relo_core.o",
+    "file": "/home/jona/edr/src/.output/bpftool/bootstrap/libbpf/staticobjs/relo_core.o"
+  },
+  {
+    "directory": ".",
+    "command": "gcc -I. -I../include -I../include/uapi -g -O2 -Werror -Wall -std=gnu89 -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64    -c usdt.c -o /home/jona/edr/src/.output/bpftool/bootstrap/libbpf/staticobjs/usdt.o",
+    "file": "/home/jona/edr/src/.output/bpftool/bootstrap/libbpf/staticobjs/usdt.o"
+  },
+  {
+    "directory": ".",
+    "command": "gcc  -O2 -W -Wall -Wextra -Wno-unused-parameter -Wno-missing-field-initializers -Wbad-function-cast -Wdeclaration-after-statement -Wformat-security -Wformat-y2k -Winit-self -Wmissing-declarations -Wmissing-prototypes -Wold-style-definition -Wpacked -Wredundant-decls -Wshadow -Wstrict-prototypes -Wswitch-default -Wundef -Wwrite-strings -DPACKAGE='\"bpftool\"' -D__EXPORTED_HEADERS__ -I/home/jona/edr/src/.output/bpftool/ -I/home/jona/edr/src/.output/bpftool/bootstrap/libbpf/include -I/home/jona/edr/lib/bpftool/src/kernel/bpf/ -I/home/jona/edr/lib/bpftool/include -I/home/jona/edr/lib/bpftool/include/uapi -DDISASM_FOUR_ARGS_SIGNATURE -DUSE_LIBCAP -DHAVE_LIBBFD_SUPPORT -DBPFTOOL_WITHOUT_SKELETONS -c -MMD main.c -o /home/jona/edr/src/.output/bpftool/bootstrap/main.o",
+    "file": "/home/jona/edr/src/.output/bpftool/bootstrap/main.o"
+  },
+  {
+    "directory": ".",
+    "command": "gcc  -O2 -W -Wall -Wextra -Wno-unused-parameter -Wno-missing-field-initializers -Wbad-function-cast -Wdeclaration-after-statement -Wformat-security -Wformat-y2k -Winit-self -Wmissing-declarations -Wmissing-prototypes -Wold-style-definition -Wpacked -Wredundant-decls -Wshadow -Wstrict-prototypes -Wswitch-default -Wundef -Wwrite-strings -DPACKAGE='\"bpftool\"' -D__EXPORTED_HEADERS__ -I/home/jona/edr/src/.output/bpftool/ -I/home/jona/edr/src/.output/bpftool/bootstrap/libbpf/include -I/home/jona/edr/lib/bpftool/src/kernel/bpf/ -I/home/jona/edr/lib/bpftool/include -I/home/jona/edr/lib/bpftool/include/uapi -DDISASM_FOUR_ARGS_SIGNATURE -DUSE_LIBCAP -DHAVE_LIBBFD_SUPPORT -DBPFTOOL_WITHOUT_SKELETONS -c -MMD common.c -o /home/jona/edr/src/.output/bpftool/bootstrap/common.o",
+    "file": "/home/jona/edr/src/.output/bpftool/bootstrap/common.o"
+  },
+  {
+    "directory": ".",
+    "command": "gcc  -O2 -W -Wall -Wextra -Wno-unused-parameter -Wno-missing-field-initializers -Wbad-function-cast -Wdeclaration-after-statement -Wformat-security -Wformat-y2k -Winit-self -Wmissing-declarations -Wmissing-prototypes -Wold-style-definition -Wpacked -Wredundant-decls -Wshadow -Wstrict-prototypes -Wswitch-default -Wundef -Wwrite-strings -DPACKAGE='\"bpftool\"' -D__EXPORTED_HEADERS__ -I/home/jona/edr/src/.output/bpftool/ -I/home/jona/edr/src/.output/bpftool/bootstrap/libbpf/include -I/home/jona/edr/lib/bpftool/src/kernel/bpf/ -I/home/jona/edr/lib/bpftool/include -I/home/jona/edr/lib/bpftool/include/uapi -DDISASM_FOUR_ARGS_SIGNATURE -DUSE_LIBCAP -DHAVE_LIBBFD_SUPPORT -DBPFTOOL_WITHOUT_SKELETONS -c -MMD json_writer.c -o /home/jona/edr/src/.output/bpftool/bootstrap/json_writer.o",
+    "file": "/home/jona/edr/src/.output/bpftool/bootstrap/json_writer.o"
+  },
+  {
+    "directory": ".",
+    "command": "gcc  -O2 -W -Wall -Wextra -Wno-unused-parameter -Wno-missing-field-initializers -Wbad-function-cast -Wdeclaration-after-statement -Wformat-security -Wformat-y2k -Winit-self -Wmissing-declarations -Wmissing-prototypes -Wold-style-definition -Wpacked -Wredundant-decls -Wshadow -Wstrict-prototypes -Wswitch-default -Wundef -Wwrite-strings -DPACKAGE='\"bpftool\"' -D__EXPORTED_HEADERS__ -I/home/jona/edr/src/.output/bpftool/ -I/home/jona/edr/src/.output/bpftool/bootstrap/libbpf/include -I/home/jona/edr/lib/bpftool/src/kernel/bpf/ -I/home/jona/edr/lib/bpftool/include -I/home/jona/edr/lib/bpftool/include/uapi -DDISASM_FOUR_ARGS_SIGNATURE -DUSE_LIBCAP -DHAVE_LIBBFD_SUPPORT -DBPFTOOL_WITHOUT_SKELETONS -c -MMD gen.c -o /home/jona/edr/src/.output/bpftool/bootstrap/gen.o",
+    "file": "/home/jona/edr/src/.output/bpftool/bootstrap/gen.o"
+  },
+  {
+    "directory": ".",
+    "command": "gcc  -O2 -W -Wall -Wextra -Wno-unused-parameter -Wno-missing-field-initializers -Wbad-function-cast -Wdeclaration-after-statement -Wformat-security -Wformat-y2k -Winit-self -Wmissing-declarations -Wmissing-prototypes -Wold-style-definition -Wpacked -Wredundant-decls -Wshadow -Wstrict-prototypes -Wswitch-default -Wundef -Wwrite-strings -DPACKAGE='\"bpftool\"' -D__EXPORTED_HEADERS__ -I/home/jona/edr/src/.output/bpftool/ -I/home/jona/edr/src/.output/bpftool/bootstrap/libbpf/include -I/home/jona/edr/lib/bpftool/src/kernel/bpf/ -I/home/jona/edr/lib/bpftool/include -I/home/jona/edr/lib/bpftool/include/uapi -DDISASM_FOUR_ARGS_SIGNATURE -DUSE_LIBCAP -DHAVE_LIBBFD_SUPPORT -DBPFTOOL_WITHOUT_SKELETONS -c -MMD btf.c -o /home/jona/edr/src/.output/bpftool/bootstrap/btf.o",
+    "file": "/home/jona/edr/src/.output/bpftool/bootstrap/btf.o"
+  },
+  {
+    "directory": ".",
+    "command": "gcc  -O2 -W -Wall -Wextra -Wno-unused-parameter -Wno-missing-field-initializers -Wbad-function-cast -Wdeclaration-after-statement -Wformat-security -Wformat-y2k -Winit-self -Wmissing-declarations -Wmissing-prototypes -Wold-style-definition -Wpacked -Wredundant-decls -Wshadow -Wstrict-prototypes -Wswitch-default -Wundef -Wwrite-strings -DPACKAGE='\"bpftool\"' -D__EXPORTED_HEADERS__ -I/home/jona/edr/src/.output/bpftool/ -I/home/jona/edr/src/.output/bpftool/bootstrap/libbpf/include -I/home/jona/edr/lib/bpftool/src/kernel/bpf/ -I/home/jona/edr/lib/bpftool/include -I/home/jona/edr/lib/bpftool/include/uapi -DDISASM_FOUR_ARGS_SIGNATURE -DUSE_LIBCAP -DHAVE_LIBBFD_SUPPORT -DBPFTOOL_WITHOUT_SKELETONS -c -MMD xlated_dumper.c -o /home/jona/edr/src/.output/bpftool/bootstrap/xlated_dumper.o",
+    "file": "/home/jona/edr/src/.output/bpftool/bootstrap/xlated_dumper.o"
+  },
+  {
+    "directory": ".",
+    "command": "gcc  -O2 -W -Wall -Wextra -Wno-unused-parameter -Wno-missing-field-initializers -Wbad-function-cast -Wdeclaration-after-statement -Wformat-security -Wformat-y2k -Winit-self -Wmissing-declarations -Wmissing-prototypes -Wold-style-definition -Wpacked -Wredundant-decls -Wshadow -Wstrict-prototypes -Wswitch-default -Wundef -Wwrite-strings -DPACKAGE='\"bpftool\"' -D__EXPORTED_HEADERS__ -I/home/jona/edr/src/.output/bpftool/ -I/home/jona/edr/src/.output/bpftool/bootstrap/libbpf/include -I/home/jona/edr/lib/bpftool/src/kernel/bpf/ -I/home/jona/edr/lib/bpftool/include -I/home/jona/edr/lib/bpftool/include/uapi -DDISASM_FOUR_ARGS_SIGNATURE -DUSE_LIBCAP -DHAVE_LIBBFD_SUPPORT -DBPFTOOL_WITHOUT_SKELETONS -c -MMD btf_dumper.c -o /home/jona/edr/src/.output/bpftool/bootstrap/btf_dumper.o",
+    "file": "/home/jona/edr/src/.output/bpftool/bootstrap/btf_dumper.o"
+  },
+  {
+    "directory": ".",
+    "command": "gcc  -O2 -W -Wall -Wextra -Wno-unused-parameter -Wno-missing-field-initializers -Wbad-function-cast -Wdeclaration-after-statement -Wformat-security -Wformat-y2k -Winit-self -Wmissing-declarations -Wmissing-prototypes -Wold-style-definition -Wpacked -Wredundant-decls -Wshadow -Wstrict-prototypes -Wswitch-default -Wundef -Wwrite-strings -DPACKAGE='\"bpftool\"' -D__EXPORTED_HEADERS__ -I/home/jona/edr/src/.output/bpftool/ -I/home/jona/edr/src/.output/bpftool/bootstrap/libbpf/include -I/home/jona/edr/lib/bpftool/src/kernel/bpf/ -I/home/jona/edr/lib/bpftool/include -I/home/jona/edr/lib/bpftool/include/uapi -DDISASM_FOUR_ARGS_SIGNATURE -DUSE_LIBCAP -DHAVE_LIBBFD_SUPPORT -DBPFTOOL_WITHOUT_SKELETONS -c -MMD /home/jona/edr/lib/bpftool/src/kernel/bpf/disasm.c -o /home/jona/edr/src/.output/bpftool/bootstrap/disasm.o",
+    "file": "/home/jona/edr/src/.output/bpftool/bootstrap/disasm.o"
+  },
+  {
+    "directory": ".",
+    "command": "cc -g -Wall -I.output -I../lib/libbpf/include/uapi -I../vmlinux/ -I/home/jona/edr/src/.output/hiredis/include -c proc.c -o .output/proc.o",
+    "file": ".output/proc.o"
+  },
+  {
+    "directory": ".",
+    "command": "clang -g -O2 -target bpf -D__TARGET_ARCH_x86 -I.output -I../lib/libbpf/include/uapi -I../vmlinux/ -I/home/jona/edr/src/.output/hiredis/include -idirafter /usr/local/include -idirafter /usr/lib/llvm-10/lib/clang/10.0.0/include -idirafter /usr/include/x86_64-linux-gnu -idirafter /usr/include -c tcp.bpf.c -o .output/tcp.bpf.o",
+    "file": ".output/tcp.bpf.o"
+  },
+  {
+    "directory": ".",
+    "command": "cc -g -Wall -I.output -I../lib/libbpf/include/uapi -I../vmlinux/ -I/home/jona/edr/src/.output/hiredis/include -c tcp.c -o .output/tcp.o",
+    "file": ".output/tcp.o"
+  },
+  {
+    "directory": ".",
+    "command": "clang -g -O2 -target bpf -D__TARGET_ARCH_x86 -I.output -I../lib/libbpf/include/uapi -I../vmlinux/ -I/home/jona/edr/src/.output/hiredis/include -idirafter /usr/local/include -idirafter /usr/lib/llvm-10/lib/clang/10.0.0/include -idirafter /usr/include/x86_64-linux-gnu -idirafter /usr/include -c file.bpf.c -o .output/file.bpf.o",
+    "file": ".output/file.bpf.o"
+  },
+  {
+    "directory": ".",
+    "command": "cc -g -Wall -I.output -I../lib/libbpf/include/uapi -I../vmlinux/ -I/home/jona/edr/src/.output/hiredis/include -c file.c -o .output/file.o",
+    "file": ".output/file.o"
+  }
+]
