@@ -24,7 +24,7 @@ ALL_LDFLAGS := $(LDFLAGS) $(EXTRA_LDFLAGS)
 
 REDIS_TOOLS_FLAGS := -I$(abspath $(OUTPUT)/hiredis/include) -L$(abspath $(OUTPUT)/hiredis/lib) -lhiredis
 
-MODULES = proc tcp file
+MODULES = proc tcp file syscall
 REDIS_TOOLS = redis-graph-cli
 
 CARGO ?= $(shell which cargo)
@@ -127,9 +127,12 @@ $(OUTPUT)/%.skel.h: $(OUTPUT)/%.bpf.o | $(OUTPUT) $(BPFTOOL)
 	$(Q)$(BPFTOOL) gen skeleton $< > $@
 
 # Build user-space code
+syscall-table.h:
+	./get-syscalls.sh
+
 $(patsubst %,$(OUTPUT)/%.o,$(MODULES)): %.o: %.skel.h
 
-$(OUTPUT)/%.o: %.c $(wildcard %.h) | $(OUTPUT)
+$(OUTPUT)/%.o: %.c $(wildcard %.h) | $(OUTPUT) syscall-table.h
 	$(call msg,CC,$@)
 	$(Q)$(CC) $(CFLAGS) $(INCLUDES) -c $(filter %.c,$^) -o $@
 
@@ -138,7 +141,7 @@ $(patsubst %,$(OUTPUT)/%.o,$(BZS_APPS)): $(LIBBLAZESYM_HEADER)
 $(BZS_APPS): $(LIBBLAZESYM_OBJ)
 
 # Build application binary
-edr: $(OUTPUT)/edr.o $(OUTPUT)/proc.o $(OUTPUT)/tcp.o $(OUTPUT)/file.o $(LIBBPF_OBJ) | $(OUTPUT) hiredis
+edr: $(OUTPUT)/edr.o $(OUTPUT)/proc.o $(OUTPUT)/tcp.o $(OUTPUT)/file.o $(OUTPUT)/syscall.o $(LIBBPF_OBJ) | $(OUTPUT) hiredis
 	$(call msg,BINARY,$@)
 	$(Q)$(CC) $(CFLAGS) $^ -pthread $(ALL_LDFLAGS) $(REDIS_TOOLS_FLAGS) -lelf -lz -o $(BIN_OUTPUT)/$@
 

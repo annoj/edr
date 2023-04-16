@@ -8,10 +8,11 @@
 #define REDIS_DATABASE "EDR"
 
 struct status {
-    volatile bool exiting;
-    volatile int proc_result;
-    volatile int tcp_result;
-    volatile int file_result;
+        volatile bool exiting;
+        volatile int proc_result;
+        volatile int tcp_result;
+        volatile int file_result;
+        volatile int syscall_result;
 };
 
 #endif
